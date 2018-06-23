@@ -37,7 +37,7 @@
             <div class="list-group col-sm-2 mt-3">
                 <a href="{{ asset("admin") }}" class="list-group-item list-group-item-action">Add resume</a>
                 <a href="{{ asset("admin/editor") }}" class="list-group-item list-group-item-action active">Edit resume</a>
-                <a href="" class="list-group-item list-group-item-action">Delete resume</a>
+                <a href="{{ asset("admin/delete") }}" class="list-group-item list-group-item-action">Delete resume</a>
                 <a href="" class="list-group-item list-group-item-action">Check resume</a>
             </div>
             <div class="col-sm-10 mt-3">

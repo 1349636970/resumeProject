@@ -9,10 +9,5 @@ class resume extends Model
     protected $table = "resume";
     protected $primaryKey = "id";
     public $timestamp = true;
-    public function getDateFormat() {
-        return time();
-    }
-    public function asDateTime($val) {
-        return $val;
-    }
+    protected $dateFormat = "U";
 }

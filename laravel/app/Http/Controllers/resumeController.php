@@ -14,7 +14,20 @@ class resumeController extends Controller
 {
     public function index()
     {
-        return view("resume.index");
+        $resume = new resume();
+        $resumeArticle = $resume->select("updated_at")->get();
+        return view("resume.index",[
+            "resume"=>$resumeArticle
+        ]);
+    }
+
+    public function article()
+    {
+        $resume = new resume();
+        $resumeArticle = $resume->select("resume")->get();
+        return view("resume.article",[
+            "resume"=>$resumeArticle
+        ]);
     }
 
     public function login(Request $request)
@@ -184,9 +197,9 @@ class resumeController extends Controller
             $resumeUpdate = $resume->where("created_at", "=", $createTime)->first();
             $resumeUpdate->resume = $updateResume;
             $resumeUpdate->job = $updateJob;
-            $status = $resume->save();
+            $status = $resumeUpdate->save();
             if ($status == true) {
-                return dd($resumeUpdate);
+                return redirect()->action("resumeController@edtior")->with("status", "update success");
             } else {
                 return view("resume.workspace", [
                     "error" => "update fail",
@@ -210,8 +223,80 @@ class resumeController extends Controller
                 "useremail" => $useremail,
                 "resumeArticle" => $resumeArticle,
                 "resumeJob" => $resumeJob,
-                "createTime"=> $createTime
+                "createTime" => $createTime
             ]);
         }
+    }
+
+    public function delete(Request $request)
+    {
+        $status = $request->input("status");
+        $createTime = $request->input('createTime');
+        if ($status == "true") {
+            $resume = new resume();
+            $resume->where("created_at", '=', $createTime)->delete();
+            $useremail = session("useremail");
+            $userID = DB::table("user")
+                ->where("Email", "=", $useremail)
+                ->select("id")
+                ->first()
+                ->id;
+            $resume = new resume();
+            $resumeArticle = $resume
+                ->where('userID', '=', $userID)
+                ->select("resume", "created_at", "updated_at", "job")
+                ->get();
+            return view("resume.delete", [
+                "error" => "",
+                "useremail" => $useremail,
+                "resume" => $resumeArticle,
+            ]);
+        } else {
+            $useremail = session("useremail");
+            $userID = DB::table("user")
+                ->where("Email", "=", $useremail)
+                ->select("id")
+                ->first()
+                ->id;
+            $resume = new resume();
+            $resumeArticle = $resume
+                ->where('userID', '=', $userID)
+                ->select("resume", "created_at", "updated_at", "job")
+                ->get();
+            return view("resume.delete", [
+                "error" => "",
+                "useremail" => $useremail,
+                "resume" => $resumeArticle,
+            ]);
+        }
+    }
+    public function confirm(Request $request)
+    {
+        $createTime = $request->input('createTime');
+        if ($createTime == null) {
+            return redirect()->action("resumeController@delete")->with("status", "fail1");
+        } else {
+            return view("resume.confirm");
+        }
+    }
+
+    public function check()
+    {
+        $useremail = session("useremail");
+        $userID = DB::table("user")
+            ->where("Email", "=", $useremail)
+            ->select("id")
+            ->first()
+            ->id;
+        $resume = new resume();
+        $resumeArticle = $resume
+            ->where('userID', '=', $userID)
+            ->select("resume", "created_at", "updated_at", "job")
+            ->get();
+        return view("resume.check", [
+            "error" => "",
+            "useremail" => $useremail,
+            "resume" => $resumeArticle,
+        ]);
     }
 }

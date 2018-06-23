@@ -31,19 +31,46 @@
     {{--workspace--}}
     <div class="container">
         <p class="h2" style="color: #d83d3d;text-align: center;">
+            @if(session('status'))
+                {{session('status')}}
+            @endif
             {{$error}}
         </p>
+        {{--left side navbar--}}
         <div class="row">
             <div class="list-group col-sm-2 mt-3">
-                <a href="{{ asset("admin") }}" class="list-group-item list-group-item-action active">Add resume</a>
-                <a href="{{ asset("admin/editor") }}" class="list-group-item list-group-item-action ">Edit resume</a>
+                <a href="{{ asset("admin") }}" class="list-group-item list-group-item-action">Add resume</a>
+                <a href="{{ asset("admin/editor") }}" class="list-group-item list-group-item-action">Edit resume</a>
                 <a href="{{ asset("admin/delete") }}" class="list-group-item list-group-item-action">Delete resume</a>
-                <a href="{{ asset("admin/check") }}" class="list-group-item list-group-item-action">Check resume</a>
+                <a href="{{ asset("admin/check") }}" class="list-group-item list-group-item-action active">Check resume</a>
             </div>
-            <div class="col-sm-10 mt-3">
+            {{--resume list--}}
+            <div class="col-sm-10 mt-3 ">
+                <table class="table table-striped table-dark table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">resume</th>
+                        <th scope="col">Job</th>
+                        <th scope="col">Updated time</th>
+                        <th scope="col">Create time</th>
+                    </tr>
+                    </thead>
+                    <tbody><?php $number = 0;?>
+                    @foreach($resume as $resumeShow)
+                        <tr style="cursor:pointer;">
+                            <th scope="col">{{$number = $number + 1}}</th>
+                            <td>{{$resumeShow->job}}</td>
+                            <td><?php date_default_timezone_set('America/Los_Angeles'); ?>{{date("Y-m-d H:i",strtotime($resumeShow->updated_at))}}</td>
+                            <td><?php date_default_timezone_set('America/Los_Angeles'); ?>{{date("Y-m-d H:i",strtotime($resumeShow->created_at))}}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+            {{--Editor--}}
+            <div class="col-sm-10 mt-3 d-none">
                 <form action="{{asset("admin")}}" METHOD="POST" id="resume">
                     @csrf
-                    <input type="text" class="form-control" name="job" placeholder="Job">
                     <textarea name="resume" id="resume" cols="30" rows="10" title="resume" form="resume"></textarea>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

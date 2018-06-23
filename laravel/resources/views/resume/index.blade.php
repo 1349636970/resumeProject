@@ -35,4 +35,16 @@
     <p class="h1">
         The place where the dream started！
     </p>
+    <div class="container">
+        <div class="row">
+            @foreach($resume as $resumeShow)
+            <div class="col-sm-6">
+                <a href="{{asset("article")}}" style="color: #000;text-decoration: none;">
+                <img class="w-100" src="{{asset("images/m2017090810261812.jpg")}}" alt="photo">
+                <?php date_default_timezone_set("America/Los_Angeles")?>{{date("Y-m-d H:i",strtotime($resumeShow->updated_at))}}
+                </a>
+            </div>
+            @endforeach
+        </div>
+    </div>
 @stop
