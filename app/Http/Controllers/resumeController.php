@@ -274,7 +274,7 @@ class resumeController extends Controller
     {
         $createTime = $request->input('createTime');
         if ($createTime == null) {
-            return redirect()->action("resumeController@delete")->with("status", "fail1");
+            return redirect()->action("resumeController@delete")->with("status", "fail");
         } else {
             return view("resume.confirm");
         }
