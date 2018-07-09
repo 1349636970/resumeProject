@@ -6,7 +6,12 @@
 <div class="container mt-5">
         <div class="fr-view">
             @foreach($resume as $resumeShow)
-            {{$resumeShow->resume}}
+                Job:{{$resumeShow->job}}<br>
+                user:{{$username}}
+            <br>
+            <div style="text-align: center;margin-top: 100px;">
+                {!! $resumeShow->resume !!}
+            </div>
             @endforeach
         </div>
 </div>

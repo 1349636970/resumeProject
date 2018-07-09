@@ -15,27 +15,38 @@ class resumeController extends Controller
     public function index()
     {
         $resume = new resume();
-        $resumeArticle = $resume->select("updated_at")->get();
-        return view("resume.index",[
-            "resume"=>$resumeArticle
+        $resumeArticle = $resume->select("updated_at", "id")->get();
+        return view("resume.index", [
+            "resume" => $resumeArticle
         ]);
     }
 
-    public function article()
+    public function article(Request $request)
     {
+        $articleId = $request->input("articleId");
         $resume = new resume();
-        $resumeArticle = $resume->select("resume")->get();
-        return view("resume.article",[
-            "resume"=>$resumeArticle
+        $userId = $resume->where("id", "=", $articleId)->select("userID")->first()->userID;
+        $username = DB::table("user")->where("id", "=", $userId)->select("username")->first()->username;
+        $resumeArticle = $resume->where("id", "=", $articleId)->select("resume", "job")->get();
+        return view("resume.article", [
+            "resume" => $resumeArticle,
+            "username" => $username
         ]);
     }
 
     public function login(Request $request)
     {
         if ($request->isMethod("get")) {
-            return view("resume.login", [
-                "error" => ""
-            ]);
+            if ($request->input("status") == "logout") {
+                session(["useremail"=> null]);
+                return view("resume.login", [
+                    "error" => ""
+                ]);
+            } else {
+                return view("resume.login", [
+                    "error" => ""
+                ]);
+            }
         } else {
             if ($request->input("user_email") == null) {
                 return view("resume.login", [
@@ -85,6 +96,11 @@ class resumeController extends Controller
                 return view("resume.register", [
                     "error" => "Please type your Email"
                 ]);
+//                confirm
+            } elseif ($confirm = DB::table("user")->where("Email", "=", $request->input('user_email'))->first() != null) {
+                return view("resume.register", [
+                    "error" => "user exist"
+                ]);
             } else {
 //            username
                 if ($request->input("user_name") == null) {
@@ -105,9 +121,9 @@ class resumeController extends Controller
                             ["Email" => $email, "username" => $username, "password" => $password]
                         );
                         if ($status == true) {
-                            return "注册成功";
+                            return redirect("login");
                         } else {
-                            return "注册失败";
+                            return "fail";
                         }
                     }
                 }
@@ -270,6 +286,7 @@ class resumeController extends Controller
             ]);
         }
     }
+
     public function confirm(Request $request)
     {
         $createTime = $request->input('createTime');
@@ -291,7 +308,7 @@ class resumeController extends Controller
         $resume = new resume();
         $resumeArticle = $resume
             ->where('userID', '=', $userID)
-            ->select("resume", "created_at", "updated_at", "job")
+            ->select("resume", "created_at", "updated_at", "job","id")
             ->get();
         return view("resume.check", [
             "error" => "",

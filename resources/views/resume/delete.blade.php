@@ -24,7 +24,7 @@
                         <a href="#" class="dropdown-item">personal page</a>
                     </div>
                 </li>
-                <li class="navbar-item"><a href="#" class="nav-link">logout</a></li>
+                <li class="navbar-item"><a href="{{asset("login?status=logout")}}" class="nav-link">logout</a></li>
             </ul>
         </div>
     </nav>

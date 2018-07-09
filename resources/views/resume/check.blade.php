@@ -24,7 +24,7 @@
                         <a href="#" class="dropdown-item">personal page</a>
                     </div>
                 </li>
-                <li class="navbar-item"><a href="#" class="nav-link">logout</a></li>
+                <li class="navbar-item"><a href="{{asset("login?status=logout")}}" class="nav-link">logout</a></li>
             </ul>
         </div>
     </nav>
@@ -57,7 +57,7 @@
                     </thead>
                     <tbody><?php $number = 0;?>
                     @foreach($resume as $resumeShow)
-                        <tr style="cursor:pointer;">
+                        <tr onclick="location.href='{{asset("article?articleId=$resumeShow->id")}}'" style="cursor:pointer;">
                             <th scope="col">{{$number = $number + 1}}</th>
                             <td>{{$resumeShow->job}}</td>
                             <td><?php date_default_timezone_set('America/Los_Angeles'); ?>{{date("Y-m-d H:i",strtotime($resumeShow->updated_at))}}</td>
